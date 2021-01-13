@@ -77,6 +77,7 @@ CMD ["npm", "start", "app.js;"]
 
 ### MongoDB Dockerfile
 
+The Dockerfile to configure the database is relatively straightforward, after copying the ``mongod.conf`` file to bind the IP to ``0.0.0.0``, and exposing port 27017, the service can be started.
 ```
 FROM mongo
 
@@ -87,3 +88,33 @@ EXPOSE 27017
 CMD ["mongod"]
 ```
 
+## Docker Compose
+
+[Docker Compose](https://docs.docker.com/compose/) is a tool for defining and running multi-container Docker applications. With Compose, a YAML file is used to configure the application's services. Then with a single command: ``docker-compose up``, the services are all created and started as defined in the configuration.
+```
+version: "3.9"
+services:
+  database:
+    build: ./db/
+    container_name: mongodb
+    hostname: mongodb
+    ports:
+      - "27017:27017"
+    restart: unless-stopped
+  app:
+    build: .
+    container_name: nodeapp
+    ports:
+      - "80:3000"
+    environment:
+      - DB_HOST=database:27017
+    depends_on:
+      - database
+    links:
+      - database
+```
+The ``docker-compose.yml`` file carries the following vital actions:
+- the services ``database`` and ``app`` are defined, which can be referred to throughout the YAML file
+- either ``build`` or ``image`` can be specified to either build the container from a Dockerfile with a specified path, or an image that has already been pulled locally
+- specify the port mappings
+- add environment variable of the IP and port of the database (``database:27017``)

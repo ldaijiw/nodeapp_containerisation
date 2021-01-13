@@ -47,8 +47,9 @@ The docker image can then be downloaded and run from any machine by specifying t
 Using the development image can be useful for testing and additional configuration, but the image size may be relatively large. Once everything is working with the development image, multi-stage builds can be used to create a lightweight image, without having to write a new Dockerfile.
 
 Add another stage with a more lightweight image (``FROM node:alpine``) and copy any necessary files from the first stage, and then run any necessary commands. For the node app, multi-stage builds reduced the image size from ~970MB to ~120MB.
-```
-## MongoDB Dockerfile
+
+### Lightweight App Dockerfile
+
 ```
 FROM node as APP
 
@@ -69,7 +70,13 @@ WORKDIR /usr/src/app
 
 EXPOSE 3000
 
+CMD ["npm", "run", "seed;"]
+
 CMD ["npm", "start", "app.js;"]
+```
+
+### MongoDB Dockerfile
+
 ```
 FROM mongo
 
@@ -79,3 +86,4 @@ EXPOSE 27017
 
 CMD ["mongod"]
 ```
+

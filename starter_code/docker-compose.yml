@@ -1,0 +1,20 @@
+version: "3.9"
+services:
+  database:
+    build: ./db/
+    container_name: mongodb
+    hostname: mongodb
+    ports:
+      - "27017:27017"
+    restart: unless-stopped
+  app:
+    build: .
+    container_name: nodeapp
+    ports:
+      - "80:3000"
+    environment:
+      - DB_HOST=database:27017
+    depends_on:
+      - database
+    links:
+      - database

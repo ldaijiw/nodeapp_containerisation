@@ -1,14 +1,14 @@
 version: "3.9"
 services:
   database:
-    build: ./db/
+    image: ldaijiw/eng74_mongodb
     container_name: mongodb
     hostname: mongodb
     ports:
       - "27017:27017"
     restart: unless-stopped
   app:
-    build: .
+    image: ldaijiw/eng74_nodeapp_lite
     container_name: nodeapp
     ports:
       - "80:3000"
